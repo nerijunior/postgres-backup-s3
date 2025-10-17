@@ -6,13 +6,13 @@ This project provides Docker images to periodically back up a PostgreSQL databas
 ```yaml
 services:
   postgres:
-    image: postgres:16
+    image: postgres:17
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
 
   backup:
-    image: eeshugerman/postgres-backup-s3:16
+    image: nerijunior/postgres-backup-s3:17
     environment:
       SCHEDULE: '@weekly'     # optional
       BACKUP_KEEP_DAYS: 7     # optional
@@ -20,6 +20,7 @@ services:
       S3_REGION: region
       S3_ACCESS_KEY_ID: key
       S3_SECRET_ACCESS_KEY: secret
+      S3_ENDPOINT: 
       S3_BUCKET: my-bucket
       S3_PREFIX: backup
       POSTGRES_HOST: postgres
@@ -54,19 +55,19 @@ docker exec <container name> sh restore.sh <timestamp>
 
 # Development
 ## Build the image locally
-`ALPINE_VERSION` determines Postgres version compatibility. See [`build-and-push-images.yml`](.github/workflows/build-and-push-images.yml) for the latest mapping.
+`POSTGRESQL_VERSION` determines Postgres version compatibility. See [`build-and-push-images.yml`](.github/workflows/build-and-push-images.yml) for the latest mapping.
 ```sh
-DOCKER_BUILDKIT=1 docker build --build-arg ALPINE_VERSION=3.14 .
+docker buildx build --build-arg ALPINE_VERSION=3.22 .
 ```
 ## Run a simple test environment with Docker Compose
 ```sh
-cp template.env .env
+cp .env.example .env
 # fill out your secrets/params in .env
 docker compose up -d
 ```
 
 # Acknowledgements
-This project is a fork and re-structuring of @schickling's [postgres-backup-s3](https://github.com/schickling/dockerfiles/tree/master/postgres-backup-s3) and [postgres-restore-s3](https://github.com/schickling/dockerfiles/tree/master/postgres-restore-s3).
+This project is a fork and re-structuring of eeshugerman's [postgres-backup-s3](https://github.com/https://github.com/eeshugerman/postgres-backup-s3)
 
 ## Fork goals
 These changes would have been difficult or impossible merge into @schickling's repo or similarly-structured forks.
@@ -85,3 +86,4 @@ These changes would have been difficult or impossible merge into @schickling's r
   - support encrypted (password-protected) backups
   - support for restoring from a specific backup by timestamp
   - support for auto-removal of old backups
+

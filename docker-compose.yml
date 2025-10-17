@@ -1,0 +1,15 @@
+# this file is here to facilitate development/testing
+# $ docker compose up -d --build --force-recreate
+
+services:
+  postgres:
+    image: postgres:17
+    env_file: .env
+
+  backup:
+    build:
+      context: .
+      args:
+        ALPINE_VERSION: '3.22'
+        POSTGRESQL_VERSION: '17'
+    env_file: .env
